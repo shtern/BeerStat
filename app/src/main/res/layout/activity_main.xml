@@ -1,0 +1,85 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="#1A237E"
+    tools:context=".HelloDropboxActivity" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#3F51B5">
+
+    <TextView
+        android:id="@+id/agentname"
+        android:text="AGENTNAME"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true">
+        <requestFocus/>
+        </TextView>
+
+
+    <EditText
+        android:id="@+id/dateET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_design"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:id="@+id/OKbutton"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true" />
+
+    <AutoCompleteTextView
+        android:id="@+id/restaurantNameAuto"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_design"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@+id/listbutton"
+        android:hint="Введите название заведения"
+        android:singleLine="true"
+        android:layout_below="@+id/agentname"
+        android:layout_alignParentLeft="true"
+        android:imeOptions="actionDone"/>
+    <ImageButton
+        android:id="@+id/listbutton"
+        android:background="@drawable/dropdownbutton"
+        android:layout_width="30dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/agentname"
+        android:layout_alignParentRight="true"/>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/activity_main_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/restaurantNameAuto">
+    <ListView
+        android:id="@+id/beerlv"
+        android:background="#FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+    </RelativeLayout>
+</LinearLayout>
