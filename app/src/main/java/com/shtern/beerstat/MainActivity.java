@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -56,6 +57,7 @@ public class MainActivity extends ActionBarActivity {
     private String ORDER_PATH="";
     private RestaurantDBHelper dbHelper;
     private List<String> restaurantList;
+    public static List<ColorMatch> colorMatchList;
     private Button mLinkButton;
     private DbxAccountManager mDbxAcctMgr;
     private TextView agentname;
@@ -82,6 +84,7 @@ public class MainActivity extends ActionBarActivity {
         restaurantList = dbHelper.getRestaurants();
         if (restaurantList==null) restaurantList = new ArrayList<String>();
         beerlist =  new ArrayList<BeerItem>();
+        colorMatchList = new ArrayList<ColorMatch>();
         cal = Calendar.getInstance();
         cal.add(Calendar.DATE,1);
         final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
@@ -186,7 +189,8 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         if (mDbxAcctMgr.hasLinkedAccount()) {
-            if (beerlist.size()==0)  doDropboxTest();
+            //if (beerlist.size()==0)
+                doDropboxTest();
         } else {
             mDbxAcctMgr.startLink((Activity)this, REQUEST_LINK_TO_DBX);
         }
@@ -196,18 +200,21 @@ public class MainActivity extends ActionBarActivity {
 
     public void doDropboxTest() {
         beerlist =  new ArrayList<BeerItem>();
+        colorMatchList = new ArrayList<ColorMatch>();
         try {
-            final String TEST_FILE_NAME = "form.xls";
-            DbxPath testPath = new DbxPath(DbxPath.ROOT, TEST_FILE_NAME);
+            final String BEER_LIST_FILE_NAME = "form.xls";
+            final String BEER_COLORS_FILE_NAME = "colors.xls";
+            DbxPath beerlistPath = new DbxPath(DbxPath.ROOT, BEER_LIST_FILE_NAME);
+            DbxPath colorsPath = new DbxPath(DbxPath.ROOT, BEER_COLORS_FILE_NAME);
             File excelfile = new File(Environment.getExternalStorageDirectory().toString()+"/excelfile.xls");
-
+            File colorfile = new File(Environment.getExternalStorageDirectory().toString()+"/colors.xls");
             // Create DbxFileSystem for synchronized file access.
             DbxFileSystem dbxFs = DbxFileSystem.forAccount(mDbxAcctMgr.getLinkedAccount());
             int flag=0;
 
-            if (dbxFs.isFile(testPath)) {
+            if (dbxFs.isFile(beerlistPath)) {
                // String resultData;
-                DbxFile testFile = dbxFs.open(testPath);
+                DbxFile testFile = dbxFs.open(beerlistPath);
                 FileInputStream instream = testFile.getReadStream();
                 FileOutputStream stream = new FileOutputStream(excelfile);
                 byte[] buffer = new byte[1024];
@@ -220,12 +227,33 @@ public class MainActivity extends ActionBarActivity {
                 instream.close();
                 testFile.close();
 
-            } else if (dbxFs.isFolder(testPath)) {
+                testFile = dbxFs.open(colorsPath);
+                instream = testFile.getReadStream();
+                stream = new FileOutputStream(colorfile);
+                buffer = new byte[1024];
+                len = instream.read(buffer);
+                while (len != -1) {
+                    stream.write(buffer, 0, len);
+                    len = instream.read(buffer);
+                }
+                stream.close();
+                instream.close();
+                testFile.close();
+
+            } else if (dbxFs.isFolder(colorsPath)) {
 
             }
             ReadExcel readex = new ReadExcel();
             readex.setInputFile(excelfile);
             readex.read();
+
+            ReadExcel readexcolor = new ReadExcel(1);
+            readexcolor.setInputFile(colorfile);
+            readexcolor.read();
+            for (int i =0; i<colorMatchList.size();i++)
+                Log.d("COLORLIST "+String.valueOf(i),"COLORLIST "+colorMatchList.get(i).beername+ " "+colorMatchList.get(i).colorstring);
+
+
         } catch (IOException e) {
         }
 

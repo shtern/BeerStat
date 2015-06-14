@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,10 +61,22 @@ public class BeerAdapter extends BaseAdapter {
         final BeerItem entry = MainActivity.beerlist.get(pos);
 
             // inflating list view layout if null
-            if (convertView == null) {
+            //if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(mContext);
                 convertView = inflater.inflate(R.layout.beeritem, null);
+            //}
+        RelativeLayout relativeLayout = (RelativeLayout) convertView.findViewById(R.id.beeritem_layout);
+        for (int i=0; i<MainActivity.colorMatchList.size();i++)
+        {
+            if (MainActivity.colorMatchList.get(i)!=null)
+                if (MainActivity.colorMatchList.get(i).colorstring!=null && MainActivity.colorMatchList.get(i).beername!=null)
+            if (entry.name.contains(MainActivity.colorMatchList.get(i).beername.toString()))
+            {
+                Log.d("MATCH",MainActivity.colorMatchList.get(i).beername +" in "+entry.name);
+                relativeLayout.setBackgroundColor(Color.parseColor(MainActivity.colorMatchList.get(i).colorstring));
+                break;
             }
+        }
         TextView name = (TextView) convertView.findViewById(R.id.beername);
         //name.setText(entry.getName());
         name.setText(String.valueOf(entry.name));
